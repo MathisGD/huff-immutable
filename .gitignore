@@ -20,3 +20,6 @@ flattened.txt
 
 # Ignore Broadcasts
 broadcast
+
+# remappings
+remappings.txt
