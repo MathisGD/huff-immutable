@@ -1,0 +1,25 @@
+/* Interface */
+#define function getValue() view returns (uint256)
+
+/* Methods */
+#define macro GET_VALUE() = takes (0) returns (0) {
+    // Load value from code.
+    0x20                // [data_size]
+    dup1 codesize sub   // [offset_code, data_size]
+    0x00                // [offset_memory, offset_code, data_size]
+    codecopy            // []
+
+    // Return value.
+    0x20 0x00 return    // []
+}
+
+#define macro MAIN() = takes (0) returns (0) {
+    // Identify which function is being called.
+    0x00 calldataload 0xE0 shr
+    dup1 __FUNC_SIG(getValue) eq get jumpi
+
+    0x00 0x00 revert
+
+    get:
+        GET_VALUE()
+}
