@@ -4,13 +4,13 @@
 /* Methods */
 #define macro GET_VALUE() = takes (0) returns (0) {
     // Load value from code.
-    0x20                // [data_size]                              32, represents size of data
-    dup1 codesize sub   // [offset_code, data_size]                 offset of data in bytecode
-    0x00                // [offset_memory, offset_code, data_size]  offset in memory
-    codecopy            // []                                       copy the data
+    0x20                // [data_size]
+    dup1 codesize sub   // [offset_code, data_size]
+    0x00                // [offset_memory, offset_code, data_size]
+    codecopy            // []
 
     // Return value.
-    0x20 0x00 return    // []                                       return the data
+    0x20 0x00 return    // []
 }
 
 #define macro MAIN() = takes (0) returns (0) {
