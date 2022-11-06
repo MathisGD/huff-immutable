@@ -3,6 +3,9 @@
 
 /* Methods */
 #define macro GET_VALUE() = takes (0) returns (0) {
+    // Macro to recover the data placed at the end of the bytecode. In this 
+    // example, the size of the data is 32 (0x20) bits and it is the first one.
+
     // Load value from code.
     0x20                // [data_size]
     dup1 codesize sub   // [offset_code, data_size]
@@ -14,8 +17,10 @@
 }
 
 #define macro CONSTRUCTOR() = takes (0) returns (0) {
-    // Copy the bytecode (without constructor code) and return it.
-
+    // This constructor will return the runtime bytecode with all the 
+    // constructor arguments concatenated at the end.
+    
+    // Copy the runtime bytecode with constructor argument concatenated.
     // Constructor code size. To modify if the constructor changes.
     0x0b            // [offset]
     dup1            // [offset, offset]
@@ -25,6 +30,8 @@
     swap2           // [offset, size, size]
     returndatasize  // [return_offset, offset, size, size]
     codecopy        // [size]
+
+    // Return bytecode.
     returndatasize  // [return_offset, size]
     return          // []
 }
