@@ -13,6 +13,22 @@
     0x20 0x00 return    // []
 }
 
+#define macro CONSTRUCTOR() = takes (0) returns (0) {
+    // Copy the bytecode (without constructor code) and return it.
+
+    // Constructor code size. To modify if the constructor changes.
+    0x0b            // [offset]
+    dup1            // [offset, offset]
+    codesize        // [total_size, offset, offset]
+    sub             // [size, offset]
+    dup1            // [size, size, offset]
+    swap2           // [offset, size, size]
+    returndatasize  // [return_offset, offset, size, size]
+    codecopy        // [size]
+    returndatasize  // [return_offset, size]
+    return          // []
+}
+
 #define macro MAIN() = takes (0) returns (0) {
     // Identify which function is being called.
     0x00 calldataload 0xE0 shr
