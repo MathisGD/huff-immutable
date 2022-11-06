@@ -1,0 +1,48 @@
+/* Interface */
+#define function getValue() view returns (uint256)
+
+/* Methods */
+#define macro GET_VALUE() = takes (0) returns (0) {
+    // Macro to recover the data placed at the end of the bytecode. In this 
+    // example, the size of the data is 32 (0x20) bits and it is the first one.
+
+    // Load value from code.
+    0x20                // [data_size]
+    dup1 codesize sub   // [offset_code, data_size]
+    0x00                // [offset_memory, offset_code, data_size]
+    codecopy            // []
+
+    // Return value.
+    0x20 0x00 return    // []
+}
+
+#define macro CONSTRUCTOR() = takes (0) returns (0) {
+    // This constructor will return the runtime bytecode with all the 
+    // constructor arguments concatenated at the end.
+    
+    // Copy the runtime bytecode with constructor argument concatenated.
+    // Constructor code size. To modify if the constructor changes.
+    0x0b            // [offset]
+    dup1            // [offset, offset]
+    codesize        // [total_size, offset, offset]
+    sub             // [size, offset]
+    dup1            // [size, size, offset]
+    swap2           // [offset, size, size]
+    returndatasize  // [return_offset, offset, size, size]
+    codecopy        // [size]
+
+    // Return bytecode.
+    returndatasize  // [return_offset, size]
+    return          // []
+}
+
+#define macro MAIN() = takes (0) returns (0) {
+    // Identify which function is being called.
+    0x00 calldataload 0xE0 shr
+    dup1 __FUNC_SIG(getValue) eq get jumpi
+
+    0x00 0x00 revert
+
+    get:
+        GET_VALUE()
+}
